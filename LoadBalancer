@@ -1,0 +1,25 @@
+1. Add Backend Rule:
+
+$LoadBalancerName="***"
+$ResourceGroupName="***"
+$loadBalancer = Get-AzLoadBalancer -Name $LoadBalancerName -ResourceGroupName $ResourceGroupName
+
+
+$frontEndIpConfig= Get-AzLoadBalancerFrontendIpConfig -Name "MyFrontEndIp" -LoadBalancer $loadBalancer
+
+$backendAddressPool= Get-AzLoadBalancerBackendAddressPoolConfig -LoadBalancer $loadBalancer -Name "MyBackendAddress"
+
+
+$probe = Get-AzLoadBalancerProbeConfig -Name "MyProbe" -LoadBalancer $loadBalancer
+   
+
+$loadBalancer | Add-AzLoadBalancerRuleConfig -Name "MyNewRule"  `
+                             -Protocol tcp `
+                             -FrontendPort PortNumber `
+                             -FrontendIpConfiguration $frontEndIpConfig `
+                             -BackendPort PortNumber `
+                             -BackendAddressPool $backendAddressPool `
+                             -Probe $probe
+
+$loadBalancer | Set-AzLoadBalancer
+
